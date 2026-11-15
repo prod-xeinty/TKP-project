@@ -12,10 +12,8 @@ import {
   Download,
   FolderKanban,
   MessageSquareCode,
-  Moon,
   Palette,
   Settings,
-  Sun,
 } from 'lucide-react';
 import {
   AppDatabase,
@@ -587,7 +585,7 @@ export default function App() {
           borderColor: 'var(--border-subtle)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 grid grid-cols-[minmax(0,1fr)_auto] xl:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 grid grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3">
           {/* Зона 1: Бренд + компактный выбор активной сделки */}
           <div className="flex min-w-0 items-center gap-3">
             <button
@@ -606,7 +604,7 @@ export default function App() {
                   activeSessionId: e.target.value,
                 })
               }
-              className="hidden sm:block min-w-0 max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
+              className="hidden sm:block min-w-0 max-w-32 xl:max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
             >
               {database.sessions.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -617,7 +615,7 @@ export default function App() {
           </div>
 
           {/* Зона 2: 4 основные вкладки + выпадающее меню «Ещё» для второстепенных модулей */}
-          <nav aria-label="Разделы приложения" className="row-start-2 col-span-2 xl:row-start-1 xl:col-start-2 xl:col-span-1 min-w-0 flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
+          <nav aria-label="Разделы приложения" className="row-start-2 col-span-2 lg:row-start-1 lg:col-start-2 lg:col-span-1 min-w-0 flex flex-wrap lg:flex-nowrap items-center justify-center gap-1 sm:gap-1.5">
             {primaryTabs.map((item) => {
               const isActive = activeScreen === item.id;
               return (
@@ -681,6 +679,17 @@ export default function App() {
                         <span>{sec.label}</span>
                       </button>
                     ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        handleQuickExportMarkdown();
+                        setMoreMenuOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl hover:opacity-80 cursor-pointer"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Экспорт отчёта (.md)</span>
+                    </button>
                     <div
                       className="pt-1.5 mt-1.5 border-t"
                       style={{ borderColor: 'var(--border-subtle)' }}
@@ -700,8 +709,8 @@ export default function App() {
             </div>
           </nav>
 
-          {/* Зона 3: Смена палитры, темы и экспорт */}
-          <div className="col-start-2 row-start-1 xl:col-start-3 flex items-center justify-end gap-2">
+          {/* Зона 3: Цветовая палитра */}
+          <div className="col-start-2 row-start-1 lg:col-start-3 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={cyclePalette}
@@ -712,26 +721,6 @@ export default function App() {
               <span className="hidden xl:inline">{currentPaletteObj.label}</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setIsDark((prev) => !prev)}
-              title="Переключить светлую / тёмную тему"
-              className="p-2 rounded-xl theme-muted border cursor-pointer hover:opacity-85 transition-opacity"
-            >
-              {isDark ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4" />
-              )}
-            </button>
-
-            <button
-              onClick={handleQuickExportMarkdown}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-xl theme-btn-primary cursor-pointer"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Экспорт
-            </button>
           </div>
         </div>
       </header>
