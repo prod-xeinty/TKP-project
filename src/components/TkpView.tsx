@@ -139,7 +139,7 @@ export const TkpView: React.FC<TkpViewProps> = ({
             transition={{ delay: idx * 0.05 }}
             className="rounded-3xl theme-surface border p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-5 shadow-xs"
           >
-            <div className="space-y-1.5 max-w-2xl">
+            <div className="min-w-0 flex-1 space-y-1.5 max-w-2xl">
               <div className="flex items-center gap-2.5 text-xs">
                 <span className="font-mono font-bold px-2.5 py-0.5 rounded-lg theme-accent-badge">
                   {item.code}
@@ -152,7 +152,7 @@ export const TkpView: React.FC<TkpViewProps> = ({
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 shrink-0">
+            <div className="flex max-w-full flex-wrap items-center gap-4">
               <div className="text-right">
                 <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   Срок (дн.)

@@ -10,6 +10,7 @@ import {
 import { AppDatabase, AppSettings } from '../types';
 import { downloadTextFile } from '../services/exportService';
 import { TabHeroHeader } from './AnimatedText';
+import { IS_STATIC_HOSTING, SOURCE_DOWNLOAD_URL } from '../services/runtime';
 
 interface SettingsViewProps {
   database: AppDatabase;
@@ -74,7 +75,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       <TabHeroHeader
         kicker="Система и локальное хранилище"
         title="Настройки и архив проекта"
-        subtitle="Параметры актуальности рыночных данных, резервное копирование базы SQLite и скачивание исходного кода для WebStorm."
+        subtitle={IS_STATIC_HOSTING
+          ? 'Данные сохраняются в этом браузере. Экспортируйте резервную копию, чтобы перенести сделки на другое устройство.'
+          : 'Параметры актуальности рыночных данных, резервное копирование базы SQLite и скачивание исходного кода для WebStorm.'}
       />
 
       {savedNotice && (
@@ -173,7 +176,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <div className="space-y-2.5">
             <a
-              href="/api/download-source-zip"
+              href={SOURCE_DOWNLOAD_URL}
               download="tkp-advisor-webstorm.zip"
               className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-bold rounded-xl theme-btn-primary cursor-pointer"
             >

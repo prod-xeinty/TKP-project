@@ -225,7 +225,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
       {/* Лаконичный блок ввода реплики и быстрых шаблонов */}
       <div className="rounded-3xl theme-surface border p-6 sm:p-7 space-y-4 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {(
               [
                 { id: 'client_reply', label: 'Возражение клиента' },
@@ -320,7 +320,7 @@ export const WorkspaceView: React.FC<WorkspaceViewProps> = ({
       {/* Единый переключатель фокуса: на экране отображается ТОЛЬКО ОДИН смысловой блок без нагромождения */}
       <div className="space-y-5">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b pb-3" style={{ borderColor: 'var(--border-subtle)' }}>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {(
               [
                 {

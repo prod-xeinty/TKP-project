@@ -174,15 +174,15 @@ export const TabHeroHeader: React.FC<TabHeroHeaderProps> = ({
   actions,
 }) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl theme-surface border p-7 sm:p-9 shadow-xs">
+    <div className="relative overflow-hidden rounded-3xl theme-surface border p-5 sm:p-9 shadow-xs">
       {/* Мягкое акцентное свечение выбранной палитры */}
       <div
         className="pointer-events-none absolute -top-28 -right-24 w-96 h-96 rounded-full blur-3xl opacity-50"
         style={{ background: 'var(--accent-glow)' }}
       />
 
-      <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-        <div className="space-y-3 max-w-2xl">
+      <div className="relative z-10 flex flex-wrap items-end justify-between gap-6">
+        <div className="min-w-0 flex-1 basis-96 space-y-3 max-w-2xl">
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -209,7 +209,7 @@ export const TabHeroHeader: React.FC<TabHeroHeaderProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.35 }}
-            className="flex flex-wrap items-center gap-2.5 shrink-0"
+            className="flex max-w-full flex-wrap items-center gap-2.5"
           >
             {actions}
           </motion.div>

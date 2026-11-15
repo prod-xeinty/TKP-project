@@ -102,7 +102,6 @@
     font-family: var(--font-sans);
     background-color: var(--bg-canvas);
     color: var(--text-main);
-    overflow-x: hidden;
     transition: background-color 0.35s ease, color 0.35s ease;
   }
 
@@ -110,6 +109,24 @@
   .tabular-nums {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Let flex/grid children shrink and long imported text wrap instead of clipping. */
+  #root, main, main :where(div, section, form, input, textarea, select) {
+    min-width: 0;
+  }
+
+  main {
+    overflow-wrap: anywhere;
+  }
+
+  button, a, input, textarea, select {
+    scroll-margin-block: 10rem 2rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-main);
+    outline-offset: 3px;
   }
 }
 

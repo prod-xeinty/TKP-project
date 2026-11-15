@@ -45,6 +45,7 @@ import { TkpView } from './components/TkpView';
 import { DirectoryView } from './components/DirectoryView';
 import { MetricsView } from './components/MetricsView';
 import { SettingsView } from './components/SettingsView';
+import { IS_STATIC_HOSTING, SOURCE_DOWNLOAD_URL } from './services/runtime';
 
 const STORAGE_KEY = 'tkp_advisor_db_v1';
 const THEME_STORAGE_KEY = 'tkp_advisor_theme';
@@ -98,6 +99,7 @@ export default function App() {
   });
 
   useEffect(() => {
+    if (IS_STATIC_HOSTING) return;
     fetch('/api/state')
       .then((res) => (res.ok ? res.json() : null))
       .then((serverDb: AppDatabase | null) => {
@@ -146,6 +148,7 @@ export default function App() {
     } catch {
       // Ignore
     }
+    if (IS_STATIC_HOSTING) return;
     fetch('/api/state', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -315,22 +318,24 @@ export default function App() {
     },
     signal?: AbortSignal
   ) => {
-    const res = await fetch(`/api/sessions/${activeSession.id}/analyze`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal,
-    });
+    if (!IS_STATIC_HOSTING) {
+      const res = await fetch(`/api/sessions/${activeSession.id}/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal,
+      });
 
-    if (res.ok) {
-      const updatedDb = (await res.json()) as AppDatabase;
-      setDatabase(updatedDb);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDb));
-      } catch {
-        // Ignore
+      if (res.ok) {
+        const updatedDb = (await res.json()) as AppDatabase;
+        setDatabase(updatedDb);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDb));
+        } catch {
+          // Ignore
+        }
+        return;
       }
-      return;
     }
 
     updateSessionById(activeSession.id, (s) => {
@@ -499,6 +504,7 @@ export default function App() {
   };
 
   const handleRefreshMarketData = () => {
+    if (IS_STATIC_HOSTING) return;
     fetch('/api/directory/collect', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -581,17 +587,18 @@ export default function App() {
           borderColor: 'var(--border-subtle)',
         }}
       >
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 grid grid-cols-[minmax(0,1fr)_auto] xl:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3">
           {/* Зона 1: Бренд + компактный выбор активной сделки */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex min-w-0 items-center gap-3">
             <button
               onClick={() => setActiveScreen('workspace')}
-              className="text-base sm:text-lg font-extrabold tracking-tight cursor-pointer"
+              className="shrink-0 text-base sm:text-lg font-extrabold tracking-tight cursor-pointer"
             >
               ТКП<span className="theme-accent-text">·Советник</span>
             </button>
 
             <select
+              aria-label="Активная сделка"
               value={activeSession.id}
               onChange={(e) =>
                 persistDatabase({
@@ -599,7 +606,7 @@ export default function App() {
                   activeSessionId: e.target.value,
                 })
               }
-              className="hidden sm:block max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
+              className="hidden sm:block min-w-0 max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
             >
               {database.sessions.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -610,7 +617,7 @@ export default function App() {
           </div>
 
           {/* Зона 2: 4 основные вкладки + выпадающее меню «Ещё» для второстепенных модулей */}
-          <nav className="flex items-center gap-1 sm:gap-1.5">
+          <nav aria-label="Разделы приложения" className="row-start-2 col-span-2 xl:row-start-1 xl:col-start-2 xl:col-span-1 min-w-0 flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
             {primaryTabs.map((item) => {
               const isActive = activeScreen === item.id;
               return (
@@ -620,7 +627,7 @@ export default function App() {
                     setActiveScreen(item.id);
                     setMoreMenuOpen(false);
                   }}
-                  className={`relative px-3 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`relative px-2 sm:px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     isActive
                       ? 'theme-btn-primary shadow-xs'
                       : 'opacity-70 hover:opacity-100'
@@ -636,6 +643,7 @@ export default function App() {
             <div className="relative">
               <button
                 type="button"
+                aria-expanded={moreMenuOpen}
                 onClick={() => setMoreMenuOpen((v) => !v)}
                 className={`px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer inline-flex items-center gap-1 ${
                   secondaryTabs.some((t) => t.id === activeScreen)
@@ -678,7 +686,7 @@ export default function App() {
                       style={{ borderColor: 'var(--border-subtle)' }}
                     >
                       <a
-                        href="/api/download-source-zip"
+                        href={SOURCE_DOWNLOAD_URL}
                         download="tkp-advisor-webstorm.zip"
                         className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold theme-accent-text rounded-xl hover:opacity-80 cursor-pointer"
                       >
@@ -693,7 +701,7 @@ export default function App() {
           </nav>
 
           {/* Зона 3: Смена палитры, темы и экспорт */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="col-start-2 row-start-1 xl:col-start-3 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={cyclePalette}
@@ -701,7 +709,7 @@ export default function App() {
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl theme-muted border cursor-pointer hover:opacity-85 transition-opacity"
             >
               <Palette className="w-3.5 h-3.5 theme-accent-text" />
-              <span className="hidden md:inline">{currentPaletteObj.label}</span>
+              <span className="hidden xl:inline">{currentPaletteObj.label}</span>
             </button>
 
             <button
@@ -729,7 +737,7 @@ export default function App() {
       </header>
 
       {/* Просторный центрированный контейнер без нагромождения */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-5 sm:px-8 py-8 sm:py-10">
+      <main className="flex-1 min-w-0 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${activeScreen}-${activeSession.id}-${palette}`}
@@ -807,6 +815,10 @@ export default function App() {
                 onUpdateSettings={handleUpdateSettings}
                 onImportDatabaseJson={(importedDb) => persistDatabase(importedDb)}
                 onResetToDefaultDemo={() => {
+                  if (IS_STATIC_HOSTING) {
+                    persistDatabase(INITIAL_DATABASE);
+                    return;
+                  }
                   fetch('/api/backup/reset', { method: 'POST' })
                     .then((res) => (res.ok ? res.json() : INITIAL_DATABASE))
                     .then((resetDb) => {

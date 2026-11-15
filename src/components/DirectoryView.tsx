@@ -18,6 +18,7 @@ import {
 } from '../types';
 import { isMarketRecordStale } from '../services/advisorEngine';
 import { TabHeroHeader } from './AnimatedText';
+import { IS_STATIC_HOSTING } from '../services/runtime';
 
 interface DirectoryViewProps {
   directory: MarketRecord[];
@@ -161,7 +162,8 @@ export const DirectoryView: React.FC<DirectoryViewProps> = ({
             <button
               type="button"
               onClick={handleRunMarketUpdate}
-              disabled={isRefreshing}
+              disabled={isRefreshing || IS_STATIC_HOSTING}
+              title={IS_STATIC_HOSTING ? 'Автоматический сбор доступен при запуске с сервером. В веб-версии можно добавлять аналоги вручную.' : undefined}
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl theme-muted border transition-opacity hover:opacity-80 cursor-pointer whitespace-nowrap disabled:opacity-60"
             >
               {isRefreshing ? (
@@ -183,6 +185,12 @@ export const DirectoryView: React.FC<DirectoryViewProps> = ({
           </>
         }
       />
+
+      {IS_STATIC_HOSTING && (
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          В веб-версии аналоги добавляются вручную. Автоматическое обновление рынка доступно при локальном запуске с сервером.
+        </p>
+      )}
 
       {isRefreshing && (
         <div className="p-4 rounded-2xl theme-accent-badge flex items-center gap-3 text-xs font-semibold">
