@@ -159,6 +159,41 @@
   color: var(--accent-main);
 }
 
+/* Keep the full navigation in the available header width. Move lower-priority
+   destinations into More at the same breakpoint where their inline copy hides. */
+.nav-overflow-workspace,
+.nav-overflow-tkp,
+.nav-overflow-directory,
+.nav-overflow-metrics,
+.nav-overflow-context,
+.nav-overflow-sessions,
+.nav-overflow-settings { display: none; }
+
+@media (max-width: 1199px) {
+  .nav-inline-settings { display: none; }
+  .nav-overflow-settings { display: flex; }
+}
+@media (max-width: 1099px) {
+  .nav-inline-sessions { display: none; }
+  .nav-overflow-sessions { display: flex; }
+}
+@media (max-width: 899px) {
+  .nav-inline-context { display: none; }
+  .nav-overflow-context { display: flex; }
+}
+@media (max-width: 729px) {
+  .nav-inline-metrics { display: none; }
+  .nav-overflow-metrics { display: flex; }
+}
+@media (max-width: 589px) {
+  .nav-inline-directory { display: none; }
+  .nav-overflow-directory { display: flex; }
+}
+@media (max-width: 439px) {
+  .nav-inline-tkp { display: none; }
+  .nav-overflow-tkp { display: flex; }
+}
+
 /* Анимированный перелив градиента в заголовках */
 @keyframes textGradientFlow {
   0% {

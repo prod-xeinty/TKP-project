@@ -599,9 +599,8 @@ export default function App() {
             </select>
           </div>
 
-          {/* Зона 2: 4 основные вкладки + выпадающее меню «Ещё» для второстепенных модулей */}
-          <nav aria-label="Разделы приложения" className="row-start-2 md:row-start-1 md:col-start-2 min-w-0 flex flex-wrap md:flex-nowrap items-center justify-center md:justify-end gap-1 sm:gap-1.5">
-            {primaryTabs.map((item) => {
+          <nav aria-label="Разделы приложения" className="row-start-2 md:row-start-1 md:col-start-2 min-w-0 w-full flex flex-wrap md:flex-nowrap items-center justify-between gap-1 sm:gap-1.5">
+            {[...primaryTabs, ...secondaryTabs].map((item) => {
               const isActive = activeScreen === item.id;
               return (
                 <button
@@ -610,7 +609,7 @@ export default function App() {
                     setActiveScreen(item.id);
                     setMoreMenuOpen(false);
                   }}
-                  className={`relative px-2 sm:px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`nav-inline-${item.id} relative px-2 sm:px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     isActive
                       ? 'theme-btn-primary shadow-xs'
                       : 'opacity-70 hover:opacity-100'
@@ -629,7 +628,7 @@ export default function App() {
                 aria-expanded={moreMenuOpen}
                 onClick={() => setMoreMenuOpen((v) => !v)}
                 className={`px-3 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer inline-flex items-center gap-1 ${
-                  secondaryTabs.some((t) => t.id === activeScreen)
+                  [...primaryTabs, ...secondaryTabs].some((t) => t.id === activeScreen && t.id !== 'workspace')
                     ? 'theme-btn-primary'
                     : 'theme-muted opacity-80 hover:opacity-100'
                 }`}
@@ -663,14 +662,14 @@ export default function App() {
                         ))}
                       </select>
                     </div>
-                    {secondaryTabs.map((sec) => (
+                    {[...primaryTabs, ...secondaryTabs].map((sec) => (
                       <button
                         key={sec.id}
                         onClick={() => {
                           setActiveScreen(sec.id);
                           setMoreMenuOpen(false);
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${
+                        className={`nav-overflow-${sec.id} w-full items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl transition-colors cursor-pointer ${
                           activeScreen === sec.id
                             ? 'theme-accent-badge font-bold'
                             : 'hover:opacity-80'
