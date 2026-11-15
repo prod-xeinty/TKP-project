@@ -12,7 +12,6 @@ import {
   Download,
   FolderKanban,
   MessageSquareCode,
-  Palette,
   Settings,
 } from 'lucide-react';
 import {
@@ -51,12 +50,6 @@ const PALETTE_STORAGE_KEY = 'tkp_advisor_palette';
 
 type PaletteId = 'emerald' | 'copper' | 'violet';
 
-const PALETTES: { id: PaletteId; label: string; dot: string }[] = [
-  { id: 'emerald', label: 'Изумруд', dot: '#059669' },
-  { id: 'copper', label: 'Терракота', dot: '#c2410c' },
-  { id: 'violet', label: 'Аметист', dot: '#6d28d9' },
-];
-
 export default function App() {
   const [database, setDatabase] = useState<AppDatabase>(() => {
     try {
@@ -84,7 +77,7 @@ export default function App() {
     }
   });
 
-  const [palette, setPalette] = useState<PaletteId>(() => {
+  const [palette] = useState<PaletteId>(() => {
     try {
       const saved = localStorage.getItem(PALETTE_STORAGE_KEY) as PaletteId;
       if (saved === 'emerald' || saved === 'copper' || saved === 'violet') {
@@ -132,12 +125,6 @@ export default function App() {
       // Ignore
     }
   }, [palette]);
-
-  const cyclePalette = () => {
-    const idx = PALETTES.findIndex((p) => p.id === palette);
-    const next = PALETTES[(idx + 1) % PALETTES.length];
-    setPalette(next.id);
-  };
 
   const persistDatabase = (nextDb: AppDatabase) => {
     setDatabase(nextDb);
@@ -573,8 +560,6 @@ export default function App() {
     },
   ];
 
-  const currentPaletteObj = PALETTES.find((p) => p.id === palette) || PALETTES[0];
-
   return (
     <div className="min-h-screen flex flex-col">
       {/* Единая воздушная верхняя панель без бокового меню (3 зоны) */}
@@ -585,7 +570,7 @@ export default function App() {
           borderColor: 'var(--border-subtle)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 grid grid-cols-[minmax(0,1fr)_auto] lg:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3">
+        <div className="w-full px-4 sm:px-8 py-3 grid grid-cols-1 md:grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3">
           {/* Зона 1: Бренд + компактный выбор активной сделки */}
           <div className="flex min-w-0 items-center gap-3">
             <button
@@ -604,7 +589,7 @@ export default function App() {
                   activeSessionId: e.target.value,
                 })
               }
-              className="hidden sm:block min-w-0 max-w-32 xl:max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
+              className="hidden xl:block min-w-0 max-w-48 truncate px-2.5 py-1 text-xs font-semibold rounded-xl theme-muted border cursor-pointer focus:outline-none"
             >
               {database.sessions.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -615,7 +600,7 @@ export default function App() {
           </div>
 
           {/* Зона 2: 4 основные вкладки + выпадающее меню «Ещё» для второстепенных модулей */}
-          <nav aria-label="Разделы приложения" className="row-start-2 col-span-2 lg:row-start-1 lg:col-start-2 lg:col-span-1 min-w-0 flex flex-wrap lg:flex-nowrap items-center justify-center gap-1 sm:gap-1.5">
+          <nav aria-label="Разделы приложения" className="row-start-2 md:row-start-1 md:col-start-2 min-w-0 flex flex-wrap md:flex-nowrap items-center justify-center md:justify-end gap-1 sm:gap-1.5">
             {primaryTabs.map((item) => {
               const isActive = activeScreen === item.id;
               return (
@@ -662,6 +647,22 @@ export default function App() {
                     transition={{ duration: 0.16 }}
                     className="absolute right-0 mt-2 w-56 rounded-2xl theme-surface border p-2 shadow-xl z-50 space-y-1"
                   >
+                    <div className="px-3 py-2 xl:hidden">
+                      <label htmlFor="mobile-session" className="block mb-1.5 text-xs font-semibold">Активная сделка</label>
+                      <select
+                        id="mobile-session"
+                        value={activeSession.id}
+                        onChange={(e) => {
+                          persistDatabase({ ...database, activeSessionId: e.target.value });
+                          setMoreMenuOpen(false);
+                        }}
+                        className="w-full min-w-0 px-2.5 py-2 text-xs rounded-xl theme-muted border cursor-pointer"
+                      >
+                        {database.sessions.map((s) => (
+                          <option key={s.id} value={s.id}>{s.clientName}</option>
+                        ))}
+                      </select>
+                    </div>
                     {secondaryTabs.map((sec) => (
                       <button
                         key={sec.id}
@@ -709,24 +710,11 @@ export default function App() {
             </div>
           </nav>
 
-          {/* Зона 3: Цветовая палитра */}
-          <div className="col-start-2 row-start-1 lg:col-start-3 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={cyclePalette}
-              title="Сменить цветовую палитру"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl theme-muted border cursor-pointer hover:opacity-85 transition-opacity"
-            >
-              <Palette className="w-3.5 h-3.5 theme-accent-text" />
-              <span className="hidden xl:inline">{currentPaletteObj.label}</span>
-            </button>
-
-          </div>
         </div>
       </header>
 
       {/* Просторный центрированный контейнер без нагромождения */}
-      <main className="flex-1 min-w-0 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
+      <main className="flex-1 min-w-0 w-full px-4 sm:px-8 py-6 sm:py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${activeScreen}-${activeSession.id}-${palette}`}
