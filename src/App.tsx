@@ -599,7 +599,7 @@ export default function App() {
             </select>
           </div>
 
-          <nav aria-label="Разделы приложения" className="row-start-2 md:row-start-1 md:col-start-2 min-w-0 w-full flex flex-wrap md:flex-nowrap items-center justify-between gap-1 sm:gap-1.5">
+          <nav aria-label="Разделы приложения" className="row-start-2 md:row-start-1 md:col-start-2 min-w-0 w-full flex flex-wrap md:flex-nowrap items-center justify-center gap-1 sm:gap-2 xl:gap-3">
             {[...primaryTabs, ...secondaryTabs].map((item) => {
               const isActive = activeScreen === item.id;
               return (
