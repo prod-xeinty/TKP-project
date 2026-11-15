@@ -1,0 +1,6 @@
+{
+  "name": "ТКП-Советник",
+  "description": "Локальный инструмент поддержки принятия решений при формировании и торге по технико-коммерческому предложению.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

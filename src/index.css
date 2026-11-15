@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root,
+  [data-palette="emerald"] {
+    --font-sans: 'Manrope', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+    /* Палитра 1 (по умолчанию): Изумруд и Тёплый Камень (Emerald & Warm Stone) */
+    --bg-canvas: #f7f5f0;
+    --bg-surface: #ffffff;
+    --bg-muted: #efeae1;
+    --border-subtle: #e2dcd0;
+    --text-main: #18181b;
+    --text-muted: #57534e;
+    --accent-main: #059669;
+    --accent-hover: #047857;
+    --accent-soft: rgba(5, 150, 105, 0.11);
+    --accent-glow: rgba(16, 185, 129, 0.22);
+    --accent-secondary: #d97706;
+  }
+
+  [data-palette="copper"] {
+    /* Палитра 2: Терракота и Песок (Warm Copper & Sand) */
+    --bg-canvas: #faf5ef;
+    --bg-surface: #ffffff;
+    --bg-muted: #f3eae0;
+    --border-subtle: #e6d7c3;
+    --text-main: #1c1917;
+    --text-muted: #57534e;
+    --accent-main: #c2410c;
+    --accent-hover: #9a3412;
+    --accent-soft: rgba(194, 65, 12, 0.11);
+    --accent-glow: rgba(234, 88, 12, 0.22);
+    --accent-secondary: #0d9488;
+  }
+
+  [data-palette="violet"] {
+    /* Палитра 3: Аметист и Платина (Royal Violet & Graphite) */
+    --bg-canvas: #f6f5fa;
+    --bg-surface: #ffffff;
+    --bg-muted: #eceaf5;
+    --border-subtle: #dcd7ec;
+    --text-main: #18181b;
+    --text-muted: #52525b;
+    --accent-main: #6d28d9;
+    --accent-hover: #5b21b6;
+    --accent-soft: rgba(109, 40, 217, 0.11);
+    --accent-glow: rgba(139, 92, 246, 0.24);
+    --accent-secondary: #059669;
+  }
+
+  .dark,
+  .dark[data-palette="emerald"] {
+    --bg-canvas: #0c1110;
+    --bg-surface: #141c1a;
+    --bg-muted: #1b2623;
+    --border-subtle: #263531;
+    --text-main: #f4f4f0;
+    --text-muted: #a3b1ac;
+    --accent-main: #10b981;
+    --accent-hover: #059669;
+    --accent-soft: rgba(16, 185, 129, 0.16);
+    --accent-glow: rgba(16, 185, 129, 0.28);
+    --accent-secondary: #f59e0b;
+  }
+
+  .dark[data-palette="copper"] {
+    --bg-canvas: #120f0d;
+    --bg-surface: #1c1714;
+    --bg-muted: #26201b;
+    --border-subtle: #382e27;
+    --text-main: #faf5ef;
+    --text-muted: #b8aba1;
+    --accent-main: #f97316;
+    --accent-hover: #ea580c;
+    --accent-soft: rgba(249, 115, 22, 0.16);
+    --accent-glow: rgba(249, 115, 22, 0.28);
+    --accent-secondary: #14b8a6;
+  }
+
+  .dark[data-palette="violet"] {
+    --bg-canvas: #0d0b14;
+    --bg-surface: #161324;
+    --bg-muted: #201c33;
+    --border-subtle: #312a4d;
+    --text-main: #f5f3ff;
+    --text-muted: #a59ec4;
+    --accent-main: #8b5cf6;
+    --accent-hover: #7c3aed;
+    --accent-soft: rgba(139, 92, 246, 0.18);
+    --accent-glow: rgba(139, 92, 246, 0.3);
+    --accent-secondary: #10b981;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-canvas);
+    color: var(--text-main);
+    overflow-x: hidden;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+
+  .font-mono,
+  .tabular-nums {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Акцентные утилиты палитры */
+.theme-surface {
+  background-color: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+
+.theme-muted {
+  background-color: var(--bg-muted);
+  border-color: var(--border-subtle);
+}
+
+.theme-btn-primary {
+  background-color: var(--accent-main);
+  color: #ffffff;
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.theme-accent-text {
+  color: var(--accent-main);
+}
+
+.theme-accent-badge {
+  background-color: var(--accent-soft);
+  color: var(--accent-main);
+}
+
+/* Анимированный перелив градиента в заголовках */
+@keyframes textGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient-word {
+  background: linear-gradient(
+    90deg,
+    var(--text-main) 0%,
+    var(--accent-main) 45%,
+    var(--accent-secondary) 75%,
+    var(--text-main) 100%
+  );
+  background-size: 240% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textGradientFlow 6s ease infinite;
+}
+
+/* Тонкие кастомные скроллбары */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 113, 108, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 113, 108, 0.55);
+}
